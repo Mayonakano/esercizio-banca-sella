@@ -1,7 +1,5 @@
 package it.esercizio.banca_sella.entity;
 
-import it.esercizio.banca_sella.dto.common.Account;
-import it.esercizio.banca_sella.dto.common.Address;
 import it.esercizio.banca_sella.dto.common.Creditor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

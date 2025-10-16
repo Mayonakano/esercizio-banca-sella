@@ -1,15 +1,12 @@
 package it.esercizio.banca_sella.feign;
 
-import it.esercizio.banca_sella.dto.response.Balance;
 import it.esercizio.banca_sella.dto.request.MoneyTransferRequest;
+import it.esercizio.banca_sella.dto.response.Balance;
 import it.esercizio.banca_sella.dto.response.FabrickResponse;
 import it.esercizio.banca_sella.dto.response.MoneyTransferResponse;
-import it.esercizio.banca_sella.dto.response.Transaction;
 import it.esercizio.banca_sella.dto.response.TransactionsPayload;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @FeignClient(
         name = "fabrick-client",

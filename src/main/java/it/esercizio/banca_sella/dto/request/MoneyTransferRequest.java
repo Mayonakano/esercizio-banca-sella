@@ -1,13 +1,12 @@
 package it.esercizio.banca_sella.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.esercizio.banca_sella.dto.TaxRelief;
 import it.esercizio.banca_sella.dto.common.Creditor;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @AllArgsConstructor

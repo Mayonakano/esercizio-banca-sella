@@ -1,8 +1,6 @@
 package it.esercizio.banca_sella.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.esercizio.banca_sella.validation.ValidTaxRelief;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;

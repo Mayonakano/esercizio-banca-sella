@@ -1,7 +1,6 @@
 package it.esercizio.banca_sella.entity;
 
 import it.esercizio.banca_sella.dto.response.Transaction;
-import it.esercizio.banca_sella.dto.response.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

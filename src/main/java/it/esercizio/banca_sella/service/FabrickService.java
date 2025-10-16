@@ -1,9 +1,8 @@
 package it.esercizio.banca_sella.service;
 
-import it.esercizio.banca_sella.dto.response.*;
 import it.esercizio.banca_sella.dto.request.MoneyTransferRequest;
+import it.esercizio.banca_sella.dto.response.*;
 import it.esercizio.banca_sella.entity.BankTransferEntity;
-import it.esercizio.banca_sella.entity.TransactionEntity;
 import it.esercizio.banca_sella.feign.FabrickClient;
 import it.esercizio.banca_sella.repository.BankTransferRepository;
 import it.esercizio.banca_sella.repository.TransactionRepository;
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
