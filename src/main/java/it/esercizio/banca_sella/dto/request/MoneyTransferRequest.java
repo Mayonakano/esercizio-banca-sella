@@ -35,12 +35,5 @@ public class MoneyTransferRequest {
     private String feeType;
     private String feeAccountId;
     @NotNull
-    
     private TaxRelief taxRelief;
-
-    @AssertTrue(message = "Request cannot be both urgent and instant")
-    public boolean isUrgentInstantValid() {
-        if (isUrgent == null || isInstant == null) return true;
-        return !(Boolean.TRUE.equals(isUrgent) && Boolean.TRUE.equals(isInstant));
-    }
 }

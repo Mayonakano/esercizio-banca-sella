@@ -5,7 +5,6 @@ import it.esercizio.banca_sella.dto.response.*;
 import it.esercizio.banca_sella.entity.BankTransferEntity;
 import it.esercizio.banca_sella.feign.FabrickClient;
 import it.esercizio.banca_sella.repository.BankTransferRepository;
-import it.esercizio.banca_sella.repository.TransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,9 +19,6 @@ public class FabrickService {
 
     @Value("${fabrick_client.accountId}")
     private String accountId;
-
-    @Autowired
-    private TransactionRepository transactionRepository;
 
     @Autowired
     private BankTransferRepository bankTransferRepository;
@@ -69,8 +65,10 @@ public class FabrickService {
             if (response == null || response.getPayload() == null) {
                 throw new NullPointerException("Fabrick transactions response or payload is null");
             }
-            var payload = response.getPayload();
-            return payload.getList();
+            TransactionsPayload transactionsPayload = response.getPayload();
+            List<Transaction> result = transactionsPayload.getList();
+            log.info("Transactions returned: {}", result);
+            return result;
         } catch (NullPointerException e) {
             log.error(e.getMessage());
             return new ArrayList<>();
