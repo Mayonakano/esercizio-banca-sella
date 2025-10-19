@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -36,6 +37,7 @@ public class AccountEntity {
     private String activateDate;
     private String currency;
 
+    @Generated
     public AccountEntity(Account account) {
         this.accountId = account.getAccountId();
         this.accountCode = account.getAccountCode();

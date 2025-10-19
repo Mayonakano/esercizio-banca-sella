@@ -4,7 +4,10 @@ import it.esercizio.banca_sella.dto.response.Fee;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "fee")
@@ -18,12 +21,13 @@ public class FeeEntity {
     private Long id;
     private String feeCode;
     private String description;
-    private Double amount;
+    private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_transfer_id")
     private BankTransferEntity bankTransfer;
 
+    @Generated
     public FeeEntity(Fee fee, BankTransferEntity bankTransfer) {
         this.feeCode = fee.getFeeCode();
         this.description = fee.getDescription();

@@ -4,6 +4,7 @@ import it.esercizio.banca_sella.dto.response.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -23,6 +24,7 @@ public class TypeEntity {
     @Column(name = "type_value")
     private String value;
 
+    @Generated
     public TypeEntity(Type type) {
         this.enumeration = type.getEnumeration();
         this.value = type.getValue();

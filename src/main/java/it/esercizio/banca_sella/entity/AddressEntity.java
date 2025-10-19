@@ -4,6 +4,7 @@ import it.esercizio.banca_sella.dto.common.Address;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -20,6 +21,7 @@ public class AddressEntity {
     private String city;
     private String countryCode;
 
+    @Generated
     public AddressEntity(Address address) {
         this.address = address.getAddress();
         this.city = address.getCity();

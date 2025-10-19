@@ -5,50 +5,43 @@ import it.esercizio.banca_sella.dto.response.*;
 import it.esercizio.banca_sella.entity.BankTransferEntity;
 import it.esercizio.banca_sella.feign.FabrickClient;
 import it.esercizio.banca_sella.repository.BankTransferRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class FabrickService {
 
     @Value("${fabrick_client.accountId}")
     private String accountId;
 
-    @Autowired
-    private BankTransferRepository bankTransferRepository;
+    private final BankTransferRepository bankTransferRepository;
 
-    @Autowired
-    private FabrickClient fabrickClient;
+    private final FabrickClient fabrickClient;
 
-    public Double getAccountBalance() {
+    public BigDecimal accountBalance() {
         log.info("Getting account balance on service");
-        try {
-            log.info("Checking balance with fabrick api with accountId {}", accountId);
-            FabrickResponse<Balance> response = fabrickClient.getBalance(accountId);
-            if (response == null || response.getPayload() == null) {
-                throw new Exception("Fabrick API returned null response");
-            }
-            Balance balance = response.getPayload();
-            log.info("Balance payload: {}", balance);
-            return balance.getBalance() != null ? balance.getBalance() : 0.0;
-        } catch (Exception e) {
-            log.error("Wrong account or service unavailable", e);
-            return 0.0;
+        log.info("Checking balance with fabrick api with accountId {}", accountId);
+        FabrickResponse<Balance> response = fabrickClient.getBalance(accountId);
+        if (response == null || response.getPayload() == null) {
+            throw new NullPointerException("Fabrick API returned null response");
         }
+        Balance balance = response.getPayload();
+        log.info("Balance payload: {}", balance);
+        return balance.getBalance() != null ? balance.getBalance() : BigDecimal.valueOf(0.0);
     }
 
-    public MoneyTransferResponse getMoneyTransfers(MoneyTransferRequest moneyTransferRequest) {
+    public MoneyTransferResponse moneyTransfers(MoneyTransferRequest moneyTransferRequest) {
         log.info("Getting money transfers from fabrick api");
         log.info("Calling fabrick api with request {}", moneyTransferRequest);
-        // Use configured accountId for path variable to avoid empty ID causing double slash in URL
-        if (accountId == null || accountId.isBlank()) {
-            throw new IllegalArgumentException("Configured accountId is missing");
+        if (accountId == null || accountId.isBlank() || moneyTransferRequest == null) {
+            throw new IllegalArgumentException("Configured accountId is missing or invalid body request");
         }
         MoneyTransferResponse result = fabrickClient.getMoneyTransfers(accountId, moneyTransferRequest);
         log.info("Money transfers: {}", result);
@@ -58,21 +51,19 @@ public class FabrickService {
         return result;
     }
 
-    public List<Transaction> getTransactions(String dateFrom, String dateTo) {
-        try {
-            log.info("Getting transactions from fabrick api for accountId {}", accountId);
-            FabrickResponse<TransactionsPayload> response = fabrickClient.getTransactions(accountId, dateFrom, dateTo);
-            if (response == null || response.getPayload() == null) {
-                throw new NullPointerException("Fabrick transactions response or payload is null");
-            }
-            TransactionsPayload transactionsPayload = response.getPayload();
-            List<Transaction> result = transactionsPayload.getList();
-            log.info("Transactions returned: {}", result);
-            return result;
-        } catch (NullPointerException e) {
-            log.error(e.getMessage());
-            return new ArrayList<>();
+    public List<Transaction> transactions(String dateFrom, String dateTo) {
+        log.info("Getting transactions from fabrick api for accountId {}", accountId);
+        if(dateFrom == null || dateFrom.isBlank() || dateTo == null || dateTo.isBlank() || accountId == null || accountId.isBlank()) {
+            throw new IllegalArgumentException("Configured accountId is missing or invalid dateFrom or dateTo");
         }
+        FabrickResponse<TransactionsPayload> response = fabrickClient.getTransactions(accountId, dateFrom, dateTo);
+        if (response == null || response.getPayload() == null) {
+            throw new NullPointerException("Fabrick transactions response or payload is null");
+        }
+        TransactionsPayload transactionsPayload = response.getPayload();
+        List<Transaction> result = transactionsPayload.getList();
+        log.info("Transactions returned: {}", result);
+        return result;
     }
 
 }

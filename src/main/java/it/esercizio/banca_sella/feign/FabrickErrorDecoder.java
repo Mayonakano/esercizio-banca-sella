@@ -1,6 +1,7 @@
 package it.esercizio.banca_sella.feign;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.Util;
@@ -13,11 +14,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
-import java.util.List;
 
 public class FabrickErrorDecoder implements ErrorDecoder {
     private static final Logger log = LoggerFactory.getLogger(FabrickErrorDecoder.class);
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+            .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
     @Override
     public Exception decode(String methodKey, Response response) {
@@ -27,16 +29,19 @@ public class FabrickErrorDecoder implements ErrorDecoder {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         try {
-            // Try to parse Fabrick standard error structure
-            FabrickResponse<Object> fabrick = objectMapper.readValue(body, new TypeReference<FabrickResponse<Object>>(){});
+            // Try to parse Fabrick standard error structure and extract first error
+            FabrickResponse<Object> fabrick = objectMapper.readValue(body, new TypeReference<>() {});
             String code = null;
             String description = null;
-            List<FabrickError> errors = fabrick.getErrors();
-            if (errors != null && !errors.isEmpty()) {
-                code = errors.get(0).getCode();
-                description = errors.get(0).getDescription();
+            if (fabrick != null && fabrick.getErrors() != null && !fabrick.getErrors().isEmpty()) {
+                FabrickError first = fabrick.getErrors().get(0);
+                code = first.getCode();
+                description = first.getDescription();
             }
-            log.warn("Feign call {} failed with status {} code {} desc {}", methodKey, status, code, description);
+            if (code == null && (description == null || description.isBlank())) {
+                description = response.reason();
+            }
+            log.warn("Feign call {} failed with status: {}, code: {}, description: {}", methodKey, status, code, description);
             return new FabrickApiException(status, code, description, body);
         } catch (Exception parseEx) {
             log.warn("Failed to parse Fabrick error body for {}. Status: {}, body: {}", methodKey, status, body);
@@ -45,11 +50,13 @@ public class FabrickErrorDecoder implements ErrorDecoder {
     }
 
     private String readBody(Response response) {
-        if (response == null || response.body() == null) return "";
+        if (response == null || response.body() == null) {
+            throw new NullPointerException("Response body is null or empty");
+        }
         try {
             return Util.toString(response.body().asReader());
         } catch (IOException e) {
-            return "";
+            throw new IllegalArgumentException("Impossible to read response body", e);
         }
     }
 }

@@ -23,6 +23,12 @@ public class FeignClientAuthInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
+        if (API_KEY == null || API_KEY.isBlank()) {
+            log.warn("Fabrick API key (fabrick_client.api_key or FABRICK_API_KEY) is missing or blank. Requests will likely fail upstream.");
+        }
+        if (AUTH_SCHEMA == null || AUTH_SCHEMA.isBlank()) {
+            log.warn("Fabrick Auth-Schema (fabrick_client.auth_schema or FABRICK_AUTH_SCHEMA) is missing or blank. Using header as blank.");
+        }
         // Use canonical header casing used by Fabrick docs
         template.header("Api-Key", API_KEY);
         // Keep lowercase for safety (gateways treat header names as case-insensitive)
@@ -33,7 +39,6 @@ public class FeignClientAuthInterceptor implements RequestInterceptor {
         template.header("X-Time-Zone", timeZone);
         String requestId = UUID.randomUUID().toString();
         template.header("X-Request-Id", requestId);
-        log.debug("Feign request -> X-Request-Id: {} X-Time-Zone: {}", requestId, timeZone);
         // Ensure JSON media types
         template.header("Accept", "application/json");
         template.header("Content-Type", "application/json");

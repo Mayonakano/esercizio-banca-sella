@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Amount {
-    private Double debtorAmount;
+    private BigDecimal debtorAmount;
     private String debtorCurrency;
-    private Double creditorAmount;
+    private BigDecimal creditorAmount;
     private String creditorCurrency;
     private String creditorCurrencyDate;
     private Float exchangeRate;

@@ -4,6 +4,7 @@ import it.esercizio.banca_sella.dto.common.Creditor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -24,6 +25,7 @@ public class CreditorEntity {
     @JoinColumn(name = "address_id")
     private AddressEntity address;
 
+    @Generated
     public CreditorEntity(Creditor creditor) {
         this.name = creditor.getName();
         this.account = new AccountEntity(creditor.getAccount());

@@ -4,6 +4,7 @@ import it.esercizio.banca_sella.dto.response.MoneyTransferResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class BankTransferEntity {
     private List<FeeEntity> fees = new ArrayList<>();
     private Boolean hasTaxRelief;
 
+    @Generated
     public BankTransferEntity(MoneyTransferResponse result) {
         this.moneyTransferId = result.getMoneyTransferId();
         this.status = result.getStatus();
@@ -61,8 +63,10 @@ public class BankTransferEntity {
         this.amount = new AmountEntity(result.getAmount());
         this.isUrgent = result.getIsUrgent();
         this.isInstant = result.getIsInstant();
-        if (result.getFees() != null) {
+        if (result.getFees() != null && !result.getFees().isEmpty()) {
             this.fees = result.getFees().stream().map(f -> new FeeEntity(f, this)).collect(Collectors.toList());
+        } else {
+            this.fees = new ArrayList<>();
         }
         this.feeType = result.getFeeType();
         this.feeAccount = result.getFeeAccount();

@@ -4,8 +4,11 @@ import it.esercizio.banca_sella.dto.response.Transaction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "transaction")
@@ -23,10 +26,11 @@ public class TransactionEntity {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "tx_type_id")
     private TypeEntity type;
-    private Double amount;
+    private BigDecimal amount;
     private String currency;
     private String description;
 
+    @Generated
     public TransactionEntity(Transaction transaction) {
         this.transactionId = transaction.getTransactionId();
         this.operationId = transaction.getOperationId();
