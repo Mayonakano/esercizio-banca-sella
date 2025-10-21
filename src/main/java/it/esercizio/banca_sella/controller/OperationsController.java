@@ -45,15 +45,7 @@ public class OperationsController {
     )
     public ResponseEntity<BigDecimal> accountBalance() {
         log.info("Getting account balance on controller");
-        try {
-            return new ResponseEntity<>(fabrickService.accountBalance(), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            log.warn("Bad request for accountBalance: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (NullPointerException e) {
-            log.warn("Balance not found: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return new ResponseEntity<>(fabrickService.accountBalance(), HttpStatus.OK);
     }
 
     @PostMapping("/transaction")
@@ -69,15 +61,7 @@ public class OperationsController {
     )
     public ResponseEntity<MoneyTransferResponse> transaction(@Valid @RequestBody MoneyTransferRequest moneyTransferRequest) {
         log.info("Creating transaction on controller");
-        try {
-            return new ResponseEntity<>(fabrickService.moneyTransfers(moneyTransferRequest), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            log.warn("Bad request for transaction: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (NullPointerException e) {
-            log.warn("Transaction related entity not found: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return new ResponseEntity<>(fabrickService.moneyTransfers(moneyTransferRequest), HttpStatus.OK);
     }
 
     @GetMapping("/allTransaction")
@@ -96,14 +80,7 @@ public class OperationsController {
             @RequestParam(value = "fromAccountingDate") @NotBlank String dateFrom,
             @Parameter(description = "End accounting date yyyy-MM-dd", required = true)
             @RequestParam(value = "toAccountingDate") @NotBlank String dateTo) {
-        try {
-            return new ResponseEntity<>(fabrickService.transactions(dateFrom, dateTo), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            log.warn("Bad request for transactions: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (NullPointerException e) {
-            log.warn("Transactions not found: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        log.info("Getting transactions from dateFrom {} to dateTo {}", dateFrom, dateTo);
+        return new ResponseEntity<>(fabrickService.transactions(dateFrom, dateTo), HttpStatus.OK);
     }
 }

@@ -40,7 +40,7 @@ public class GlobalHandlerException {
                 if (errors != null && !errors.isEmpty()) {
                     for (int i = 0; i < errors.size(); i++) {
                         FabrickError err = errors.get(i);
-                        log.warn("Fabrick error [{}]: code={}, description={}, params={}", i, err.getCode(), err.getDescription(), err.getParams());
+                        log.error("Fabrick error [{}]: code={}, description={}, params={}", i, err.getCode(), err.getDescription(), err.getParams());
                     }
                 }
             } catch (Exception parseEx) {

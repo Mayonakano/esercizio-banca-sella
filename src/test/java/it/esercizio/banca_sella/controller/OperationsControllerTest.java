@@ -68,7 +68,6 @@ class OperationsControllerTest {
     void transaction() throws Exception {
         MoneyTransferResponse response = new MoneyTransferResponse();
         MoneyTransferRequest request = UtilsTest.moneyTransferRequestMocked();
-        // Fix invalid CF in utility to satisfy @Pattern
         request.getTaxRelief().setCreditorFiscalCode("RSSMRA85T10A562S");
 
         when(fabrickService.moneyTransfers(any(MoneyTransferRequest.class))).thenReturn(response);
@@ -113,7 +112,6 @@ class OperationsControllerTest {
     @Test
     @DisplayName("POST /operation/transaction returns 400 on validation errors")
     void transaction_validation_returns400() throws Exception {
-        // Empty body violates @Valid constraints, should not hit service
         mockMvc.perform(post("/operation/transaction")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
